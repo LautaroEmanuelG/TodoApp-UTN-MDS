@@ -1,0 +1,81 @@
+.containerPrincipalListTareas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 0 2rem 0;
+  gap: 2rem;
+  background: #101014;
+  min-height: 80vh;
+  border: none;
+  box-shadow: none;
+}
+
+.containerTitleAndButton {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.containerTitleAndButton h2 {
+  font-size: 1.7rem;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: none;
+  text-transform: none;
+}
+
+.containerTitleAndButton button {
+  padding: 0.6rem 1.4rem;
+  background: #18181b;
+  border: 2px solid #23232b;
+  border-radius: 0.7rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.18s, color 0.18s, border 0.18s;
+}
+
+.yellowPlus {
+  color: #ffe600;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-right: 0.2rem;
+  text-shadow: none;
+}
+
+.containerTitleAndButton button:hover {
+  background: #23232b;
+  color: #ffe600;
+  border-color: #ffe600;
+}
+
+.containerList {
+  width: 90%;
+  background: #18181b;
+  border-radius: 1rem;
+  padding: 1.2rem 0.7rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #23232b;
+  box-shadow: none;
+}
+
+@keyframes fadeInList {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
