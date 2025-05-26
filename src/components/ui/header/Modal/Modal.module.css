@@ -42,11 +42,11 @@
 .inputBrutal {
   width: 100%;
   padding: 0.85rem 1.1rem;
-  border: 1px solid #23232b;
+  border: 1px solid #101014;
   border-radius: 0.2rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   background: #101014;
-  color: #fff;
+  color: #717171;
   font-weight: 500;
   box-shadow: none;
   margin-bottom: 0.5rem;
@@ -75,6 +75,12 @@
   border-color: #f5576c;
   outline: none;
   box-shadow: 0 2px 12px rgba(245, 87, 108, 0.18);
+}
+
+.formContent input::placeholder,
+.formContent textarea::placeholder {
+  font-weight: 300;
+  font-size: 0.8rem;
 }
 
 .buttonCards {

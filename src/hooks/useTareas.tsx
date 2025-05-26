@@ -37,26 +37,38 @@ export const useTareas = () => {
     if (data) setArrayTareas(data);
   };
 
-  const crearTarea = async (nuevaTarea: ItareaExt) => {
-    agregarNuevaTarea(nuevaTarea);
+  const crearTarea = async (nuevaTareaSinId: Omit<ItareaExt, 'id'>) => {
     try {
-      await postNuevaTarea(nuevaTarea);
-      Swal.fire('Éxito', 'tarea creada correctamente');
+      const tareaPersistida = await postNuevaTarea(
+        nuevaTareaSinId as ItareaExt
+      );
+
+      agregarNuevaTarea(tareaPersistida);
+
+      Swal.fire('Éxito', 'Tarea creada correctamente', 'success');
     } catch (error) {
-      eliminarTarea(nuevaTarea.id!);
-      console.log('algo salio mal al crear la tarea');
+      console.error('Algo salió mal al crear la tarea:', error);
+      Swal.fire('Error', 'No se pudo crear la tarea', 'error');
     }
   };
 
   const putTareaEditar = async (tareaEditada: ItareaExt) => {
-    const estadoPrevio = tareas.find(el => el.id == tareaEditada.id);
+    const tareaOriginal = tareas.find(el => el.id === tareaEditada.id);
+    if (!tareaOriginal) {
+      console.error('Error: Tarea original no encontrada para editar.');
+      Swal.fire('Error', 'No se pudo encontrar la tarea para editar.', 'error');
+      return;
+    }
+
     editarNuevaTarea(tareaEditada);
+
     try {
       await editarTarea(tareaEditada);
-      Swal.fire('Éxito', 'tarea actualizada correctamente');
+      Swal.fire('Éxito', 'Tarea actualizada correctamente', 'success');
     } catch (error) {
-      if (estadoPrevio) editarNuevaTarea(estadoPrevio);
-      console.log('algo salio mal al editar una tarea');
+      console.error('Algo salió mal al editar una tarea:', error);
+      editarNuevaTarea(tareaOriginal);
+      Swal.fire('Error', 'No se pudo actualizar la tarea', 'error');
     }
   };
 

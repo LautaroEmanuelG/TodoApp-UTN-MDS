@@ -3,18 +3,23 @@ import type { Itarea } from '../type/Itarea';
 
 const LOCAL_STORAGE_KEY = 'TASKFLOW_TODOS';
 
-export interface ItareaExt extends Itarea {
-  completada?: boolean;
-}
-
 const saveToLocalStorage = (tareas: ItareaExt[]): void => {
   window?.localStorage?.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tareas));
 };
 
 const loadFromLocalStorage = (): ItareaExt[] => {
   const data = window?.localStorage?.getItem(LOCAL_STORAGE_KEY);
-  return data ? (JSON.parse(data) as ItareaExt[]) : [];
+  try {
+    return data ? (JSON.parse(data) as ItareaExt[]) : [];
+  } catch (error) {
+    console.error('Error al parsear tareas desde localStorage:', error);
+    return []; // Devolver array vacío en caso de error de parseo
+  }
 };
+
+export interface ItareaExt extends Itarea {
+  completada?: boolean;
+}
 
 interface ItareaStore {
   tareas: ItareaExt[];
@@ -37,30 +42,41 @@ export const tareaStore = create<ItareaStore>(set => ({
     saveToLocalStorage(arrayDeTareas);
     set(() => ({ tareas: arrayDeTareas }));
   },
-  agregarNuevaTarea: nuevaTarea =>
+  agregarNuevaTarea: (nuevaTarea: ItareaExt) =>
     set(state => {
-      const nuevasTareas = [
-        ...state.tareas,
-        { ...nuevaTarea, completada: false },
-      ];
-      saveToLocalStorage(nuevasTareas);
-      return { tareas: nuevasTareas };
-    }),
-  editarNuevaTarea: tareaEditada =>
-    set(state => {
-      const arregloTareas = state.tareas.map(tarea =>
-        tarea.id === tareaEditada.id
-          ? { ...tareaEditada, completada: tarea.completada ?? false }
-          : tarea
+      const indiceExistente = state.tareas.findIndex(
+        t => t.id === nuevaTarea.id
       );
-      saveToLocalStorage(arregloTareas);
-      return { tareas: arregloTareas };
+      let tareasActualizadas;
+
+      if (indiceExistente !== -1) {
+        console.warn(
+          `Intentando agregar tarea con ID existente: ${nuevaTarea.id}. Actualizando en su lugar.`
+        );
+        tareasActualizadas = [...state.tareas];
+        tareasActualizadas[indiceExistente] = nuevaTarea;
+      } else {
+        tareasActualizadas = [...state.tareas, nuevaTarea];
+      }
+
+      saveToLocalStorage(tareasActualizadas);
+      return { tareas: tareasActualizadas };
     }),
-  eliminarTarea: idTarea =>
+  editarNuevaTarea: (tareaEditada: ItareaExt) =>
     set(state => {
-      const arregloTareas = state.tareas.filter(tarea => tarea.id !== idTarea);
-      saveToLocalStorage(arregloTareas);
-      return { tareas: arregloTareas };
+      const tareasActualizadas = state.tareas.map(tarea =>
+        tarea.id === tareaEditada.id ? { ...tarea, ...tareaEditada } : tarea
+      );
+      saveToLocalStorage(tareasActualizadas);
+      return { tareas: tareasActualizadas };
+    }),
+  eliminarTarea: (idTarea: string) =>
+    set(state => {
+      const tareasActualizadas = state.tareas.filter(
+        tarea => tarea.id !== idTarea
+      );
+      saveToLocalStorage(tareasActualizadas);
+      return { tareas: tareasActualizadas };
     }),
   eliminarTodas: () => {
     saveToLocalStorage([]);
@@ -68,16 +84,19 @@ export const tareaStore = create<ItareaStore>(set => ({
   },
   completarTodas: () =>
     set(state => {
-      const nuevasTareas = state.tareas.map(t => ({ ...t, completada: true }));
-      saveToLocalStorage(nuevasTareas);
-      return { tareas: nuevasTareas };
+      const tareasActualizadas = state.tareas.map(t => ({
+        ...t,
+        completada: true,
+      }));
+      saveToLocalStorage(tareasActualizadas);
+      return { tareas: tareasActualizadas };
     }),
-  toggleCompletada: idTarea =>
+  toggleCompletada: (idTarea: string) =>
     set(state => {
-      const nuevasTareas = state.tareas.map(t =>
+      const tareasActualizadas = state.tareas.map(t =>
         t.id === idTarea ? { ...t, completada: !t.completada } : t
       );
-      saveToLocalStorage(nuevasTareas);
-      return { tareas: nuevasTareas };
+      saveToLocalStorage(tareasActualizadas);
+      return { tareas: tareasActualizadas };
     }),
 }));

@@ -44,9 +44,11 @@ export const Modal: FC<IModal> = ({ handleCloseModal }) => {
     if (tareaActiva) {
       putTareaEditar(fromValues);
     } else {
-      crearTarea({ ...fromValues, id: new Date().toDateString() });
+      // No asignar 'id' aquí, dejar que la lógica de creación (en tareas.ts o backend) lo genere
+      crearTarea(fromValues);
     }
     setTareaActiva(null);
+    setFromValues(inicialState); // Resetear el formulario
     handleCloseModal();
   };
 

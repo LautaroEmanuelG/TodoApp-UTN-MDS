@@ -20,7 +20,7 @@ export const CardList: FC<IcardList> = ({ tarea, handleOpenModalEdit }) => {
   return (
     <div className={styles.containerCard}>
       <div>
-        <h3>📌 {tarea.titulo}</h3>
+        <h3>{tarea.titulo}</h3>
         <p>{tarea.descripcion}</p>
         <p>
           <b>⏰ {tarea.fechaLimite}</b>
